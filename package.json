@@ -1,0 +1,26 @@
+{
+  "name": "njsuper",
+  "version": "1.0.0",
+  "description": "JS Code Management",
+  "main": "njsuper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajiedx/njsuper.git"
+  },
+  "keywords": [
+    "prototype",
+    "extends",
+    "super",
+    "inherit",
+    "inheritance"
+  ],
+  "author": "Tolonbek uulu Adilet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ajiedx/njsuper/issues"
+  },
+  "homepage": "https://github.com/ajiedx/njsuper#readme"
+}
