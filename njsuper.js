@@ -1,16 +1,25 @@
+
 class NjSuper {
     constructor(dt, objx) {
         if(typeof objx === 'object') {
             if (objx.hasOwnProperty('obj')) {
                 this.objx = objx.obj
                 delete objx.obj
+                
+            } else if (objx.hasOwnProperty('objx')) {
+                if (objx.objx == false) {
+                    this.objx = Object
+                    delete objx.obj
+                } else {
+                    this.objx = objx.objx
+                }
             }
+
             Object.assign(this, objx)
+   
         }
-        
-        if (typeof t !== 'undefined') {
-            Object.create(this.dt)
-        } else if (this.enum === true) {
+
+        if (this.enum === true) {
             Object.defineProperty(this, 'dt', {
                 value: dt,
                 enumerable: true,
@@ -31,8 +40,7 @@ class NjSuper {
                 writable: true,
                 configurable: true
             })
-        } else if (this.typeof(objx) === 'object') {
-
+        } else if (objx.obj) {
             Object.defineProperty(this, name, {
                 value: this.resolveObject(vl, objx, name),
                 enumerable: true,
@@ -59,23 +67,32 @@ class NjSuper {
     resolveObject(value, obj, name) {
         if (name) {
             if (obj.obj instanceof Object) {
-                Object.assign(value, obj)
-                return new obj.obj(name, value)
-            } else if (this.objx) {
-                Object.assign(value, obj)
-                return new this.objx(name, value)
-            } else {
-                return new NjSuper(name, value)
-            }
-        } else if (obj) {
+                if (obj.objx) {
+                    Object.assign(value, obj.obj)
+                    return new obj.obj(name, value)
+                } else if (obj.objx == false) {
+                    return new obj.obj(value)
+                } else {
+                    return new obj.obj(name, value)
+                }
+            } 
+        } else if (obj.obj) {
             if (obj.obj instanceof Object) {
-                return new obj.obj(value, obj)
-            } else if (this.objx) {
-                return new this.objx(value, obj)
-            } else {
-                return new NjSuper(value)
-            }
-        } 
+                if (obj.objx) {
+                    Object.assign(value, obj.obj)
+                    return new obj.obj(value, {obj: obj.obj})
+                } else if (obj.objx == false) {
+                    return new obj.obj(value)
+                } else {
+                    return new obj.obj(value, obj)
+                }
+               
+            } 
+        } else if (this.objx) {
+            return new this.objx(value, obj)
+        } else {
+            return new NjSuper(value)
+        }
 
     }
 
@@ -109,9 +126,21 @@ class NjSuper {
         }
     }
 
-    assign(name, value) {
+    assign(name, value, number) {
         if (name === 'this') {
-            if (this.typeof(value) === 'object') {
+            if (number) {
+                let number = 0
+                for (const i in this) {
+                    if (this.typeof(Number(i)) === 'number') {
+                        if(number <= Number(i)) {
+                            if(!this.has(Number(i) + 1)) {
+                                number = Number(i) + 1
+                            }
+                        }
+                    }
+                }
+                Object.assign(this, {[number]: value})
+            } else if (this.typeof(value) === 'object') {
             
                 Object.assign(this, value)
                 
@@ -178,14 +207,10 @@ class NjSuper {
 
             this.check(name)
             if (this.has(name)) {
-                this.assign(name, value)
-
-                
+                this.assign(name, value)    
             } else if (objx) {
-                console.log('wwwww')
                this.define(name, value, objx)
             } else {
-                console.log('wwwww')
                 this.define(name, value, false)
             }
         }
