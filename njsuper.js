@@ -96,6 +96,47 @@ class NjSuper {
 
     }
 
+    instance(of, equals) {
+        of = of.constructor.name
+        equals = equals.prototype.__proto__constructor.name
+        if (of === equals) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    instanceAll(of, equals) {
+        of = of.constructor.name
+        if(of === equals.prototype.__proto__.constructor.name) {
+            return true
+        } else if (equals.prototype.__proto__.prototype) {
+            if (of === equals.prototype.__proto__.prototype.__proto__.constructor.name) {
+                return true
+            } else if (equals.prototype.__proto__.prototype.__proto__.prototype) {
+                if (of === equals.
+                    prototype.__proto__.prototype.__proto__.prototype.constructor.name) {
+                        return true
+                } else if (equals.
+                    prototype.__proto__.prototype.__proto__.prototype) {
+                    if (of === equals.
+                        prototype.__proto__.prototype.__proto__.prototype.constructor.name) {
+                            return true
+                    } else {
+                        return false
+                    }
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+        
+    }
+
     typeof(value) {
         if (typeof value === 'function') {
             return 'function'
