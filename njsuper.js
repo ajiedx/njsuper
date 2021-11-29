@@ -64,6 +64,18 @@ class NjSuper {
         }
     }
 
+    compareBegining(str, string) {
+        string = string[Symbol.iterator]()
+
+        for (const i in str) {
+            if (str[i] !== string.next().value) {
+                return false
+            } 
+        }
+
+        return true
+    }
+
     resolveObject(value, obj, name) {
         if (name) {
             if (obj.obj instanceof Object) {
