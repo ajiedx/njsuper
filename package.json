@@ -1,26 +1,27 @@
 {
-  "name": "njsuper",
-  "version": "1.0.3",
+  "name": "rethis",
+  "version": "1.0.0",
   "description": "JS Code Management",
-  "main": "njsuper.js",
+  "main": "rethis.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ajiedx/njsuper.git"
+    "url": "git+https://github.com/ajiedx/rethis.git"
   },
   "keywords": [
     "prototype",
     "extends",
     "super",
     "inherit",
-    "inheritance"
+    "inheritance",
+	"this"
   ],
   "author": "Tolonbek uulu Adilet",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ajiedx/njsuper/issues"
+    "url": "https://github.com/ajiedx/rethis/issues"
   },
-  "homepage": "https://github.com/ajiedx/njsuper#readme"
+  "homepage": "https://github.com/ajiedx/rethis#readme"
 }
