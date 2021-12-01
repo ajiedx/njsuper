@@ -1,5 +1,5 @@
 
-class ReThis {
+class NjSuper {
     constructor(dt, objx) {
         if(typeof objx === 'object') {
             if (objx.hasOwnProperty('obj')) {
@@ -103,7 +103,7 @@ class ReThis {
         } else if (this.objx) {
             return new this.objx(value, obj)
         } else {
-            return new ReThis(value)
+            return new NjSuper(value)
         }
 
     }
@@ -281,4 +281,4 @@ class ReThis {
     
 }
 
-module.exports = { ReThis }
+module.exports = { NjSuper }
