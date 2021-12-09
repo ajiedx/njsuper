@@ -167,6 +167,22 @@ class NjSuper {
         }
     }
 
+    valueInArray(value, arr) {
+        for (const i in arr) {
+            if (this.compareBegining(arr[i], value)) return true
+        }
+        return false
+    }
+
+    countChars(string, char) {
+        let count = 0
+        for (const i in string) {
+            if (string[i] === char) count = count + 1
+        }
+
+        return count
+    }
+
     count(obj) {
         if (this.typeof(obj) === 'object') {
             let length = 0
