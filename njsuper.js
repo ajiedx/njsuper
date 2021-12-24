@@ -196,7 +196,37 @@ class NjSuper {
         return newstring
     }
 
+    splitCharsFilter(string, chars, filter) {
+        let array = [''], split = false, char = false, id = 0
 
+        for (let i in string) {
+            for (const l in chars) {
+                if (chars[l] !== string[i]) split = false
+                else {
+                    split = true
+                    break
+                }
+            }
+
+            for (const l in filter) {
+                if (filter[l] !== string[i]) char = true
+                else {
+                    char = false
+                    break
+                }
+            }
+
+            if (char) {
+                if (split) array[id] = array[id] + string[i], id = id + 1, split = false
+                else if (array[id]) array[id] = array[id] + string[i]
+                else array[id] = string[i]
+            } else {
+                if (split) id = id + 1, split = false
+            }
+        }
+
+        return array
+    }
 
     splitOnce(string, cut, right, last) {
         let split = false, i = 0, l = 0, v = string.length - 1
@@ -481,17 +511,18 @@ class NjSuper {
             }
 
             if (this.typeof(item) === 'object' || this.typeof(item) === 'array') {
-                let count = 0, scount = 0, objcount = 0, sh = []
-
+                let count = 0, scount = 0, objcount = 0, sh = [], its = []
                 for (let c in item) {
                     count = count + 1
                 }
+
                 let obcount = count
                 if (count > 11) {
                     let shc = 0
                     for (var i = 0; i < 11; i++) {
                         if (i < 5) sh.push(i)
                         else sh.push(count - shc), shc = shc + 1
+
                     }
                 }
 
@@ -499,17 +530,22 @@ class NjSuper {
                     if (!isNaN(i)) idc = dnc
                     if (this.typeof(item[i])  === 'object' ) {
                         obcount = obcount - 1
-                        if (this.dps !== 0 && this.dps - 1 < depth) {
-                            let obs = []
-                            for (let s in item[i]) {
-                                if (this.typeof(item[i][s]) === 'object') obs.push(s+': {}')
-                                else obs.push(s+': ...')
-                            }
-                            obs = obs.join(', ')
-                            console.log('%c' +  tabs  + '%c' + i + `%c:%c ${obs} `, brc, idc, smc, 'color: #fff; background-color: #3636')
-                        } else {
-                            console.log('%c' +  tabs  + '%c' + i + '%c: {', brc, idc, smc )
+                        let its = []
+                        for (let s in item[i]) {
+                            if (this.typeof(item[i][s]) === 'object') if (item[i][s].len) its.push(s+': {'+item[i][s].len+'}'); else its.push(s+': {}');
+                            else if (this.typeof(item[i][s]) === 'array') its.push(s+ ': []')
+                            else if (this.typeof(item[i][s]) === 'string') its.push(s+': '+item[i][s].slice(0, 7)+'..')
+                            else its.push(s+': '+item[i][s])
                         }
+                        let sum = count - 11
+                        if (Math.sign(sum) === -1) its = its.join(', ')
+                        else its = its.slice(sum, its.length), its = its.join(', ')
+                        console.log('%c' +  tabs  + '%c' + i + `%c: %c { %c ${its} `, brc, idc, smc, stc, 'color: #fff2f6; background-color: #080c14')
+                        // if (this.dps !== 0 && this.dps - 1 < depth) {
+                        //
+                        // } else {
+                        //     console.log('%c' +  tabs  + '%c' + i + `%c:%c ${its} `, brc, idc, smc, 'color: #fff; background-color: #3636')
+                        // }
                         output(item[i], depth + 1, obcount)
 
                     } else if (this.typeof(item) === 'array') {
