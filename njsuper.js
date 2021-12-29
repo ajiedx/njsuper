@@ -64,6 +64,33 @@ class NjSuper {
         }
     }
 
+    addArray(array) {
+        let ll = array.length
+        for (var i = 1; i < arguments.length; i++) {
+            if (this.typeof(arguments[i]) === 'array') {
+                for (var l = 0; l < arguments[i].length; l++) {
+                    array[ll] = arguments[i][l], ll = ll + 1
+                }
+            } else {
+                array[ll] = arguments[i], ll = ll + 1
+            }
+        }
+    }
+
+    mergeInArray() {
+        let array = [], ia = 0
+        for (var i = 0; i < arguments.length; i++) {
+            if (this.typeof(arguments[i]) === 'array') {
+                for (var l = 0; l < arguments[i].length; l++) {
+                    array[ia] = arguments[i][l], ia = ia + 1
+                }
+            } else {
+                array[ia] = arguments[i], ia = ia + 1
+            }
+        }
+        return array
+    }
+
     isEnd(str, string) {
         const reg = new RegExp(str+'$', 's')
         if (string.match(reg)) return true
