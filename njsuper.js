@@ -19,6 +19,7 @@ class NjSuper {
 
         }
 
+
         if (this.enum === true) {
             Object.defineProperty(this, 'dt', {
                 value: dt,
@@ -497,6 +498,228 @@ class NjSuper {
     }
 
     output(item, dp, endp) {
+        if (typeof window === 'object') this.outputBrowser(item, dp, endp)
+        else this.outputNode(item, dp, endp)
+    }
+
+    outputNode(item, dp, endp) {
+        this.dps = 0
+        if (this.typeof(dp) === 'number') this.dps = dp
+        else if (this.typeof(endp) === 'number') this.dps = endp
+        const output = (item, depth=0, curly) => {
+            const {stdout} = require('process')
+            let tabs = '', endstr = ''
+            let d9s0xcA = Date.now().toString()
+            let ssn = Number(d9s0xcA[d9s0xcA.length - 1])
+            let ccn = Number(d9s0xcA[d9s0xcA.length - 2])
+            let iin = Number(d9s0xcA[d9s0xcA.length - 3])
+            let colors = []
+            colors = ['3', '2', '5', '6', '1',
+                '3', '2', '5', '7', '4']
+
+            let brc = colors[Number(d9s0xcA[d9s0xcA.length - 2])], idc = colors[Number(d9s0xcA[d9s0xcA.length - 3])]
+            let smc = colors[Number(d9s0xcA[d9s0xcA.length - 4])], stc = colors[Number(d9s0xcA[d9s0xcA.length - 5])]
+            let dnc = colors[Number(d9s0xcA[d9s0xcA.length - 6])]
+            brc = `\x1b[3${brc}m`, idc = `\x1b[9${idc}m`, smc = `\x1b[3${smc}m`, stc = `\x1b[5m\x1b[9${stc}m`
+            dnc = `\x1b[9${dnc}m`
+            let symbsign = ['|', ':', '^', '.', '+', '()', '{}', '[]', '*', '?']
+
+            for (var s = 0; s < depth -1; s++) {
+                if (symbsign[ssn].length === 1) tabs = tabs + '    ' + symbsign[ssn]
+                else tabs = tabs + '   ' + symbsign[ssn]
+            }
+
+            if (depth > 0) {
+                tabs = tabs + '    '
+            }
+
+            if (this.dps !== 0 && this.dps < depth) {
+
+                return
+            }
+
+            if (this.typeof(item) === 'object' || this.typeof(item) === 'array') {
+                let count = 0, scount = 0, objcount = 0, sh = [], its = []
+                for (let c in item) {
+                    count = count + 1
+                }
+
+                let obcount = count
+                if (count > 11) {
+                    let shc = 0
+                    for (var i = 0; i < 11; i++) {
+                        if (i < 5) sh.push(i)
+                        else sh.push(count - shc), shc = shc + 1
+
+                    }
+                }
+
+                for (let i in item) {
+                    if (!isNaN(i)) idc = dnc
+                    if (this.typeof(item[i])  === 'object' ) {
+                        obcount = obcount - 1
+                        let its = [], rec = 0
+                        for (let s in item[i]) {
+                            rec = rec + 1
+                            if (this.typeof(item[i][s]) === 'object') if (item[i][s].len) its.push(s+': {'+item[i][s].len+'}'); else its.push(s+': {}');
+                            else if (this.typeof(item[i][s]) === 'function') its.push(s+'() => { }')
+                            else if (this.typeof(item[i][s]) === 'array') its.push(s+ ': []')
+                            else if (this.typeof(item[i][s]) === 'string') its.push(s+': '+this.filterChars(item[i][s].slice(0, 7), '\n')+'..')
+                            // else its.push(s+': '+item[i][s])
+                        }
+                        let sum = rec - 6
+                        if (Math.sign(sum) == -1) its = its.join(', ')
+                        else {
+                            its = its.slice(sum, its.length)
+                            its = its.join(', ')
+                        }
+
+                        stdout.write(`${brc}${tabs}\x1b[0m`)
+                        stdout.write(`${idc}${i}\x1b[0m`)
+                        stdout.write(`${smc}: \x1b[0m`)
+                        stdout.write(`${stc}{ \x1b[0m`)
+                        stdout.write(`\x1b[2m\x1b[47m\x1b[40m${its}\x1b[0m`)
+                        stdout.write(`${stc} } \x1b[0m\n`)
+                        // if (this.dps !== 0 && this.dps - 1 < depth) {
+                        //
+                        // } else {
+                        //     console.log('%c' +  tabs  + '%c' + i + `%c:%c ${its} `, brc, idc, smc, 'color: #fff; background-color: #3636')
+                        // }
+                        output(item[i], depth + 1, obcount)
+
+                    } else if (this.typeof(item) === 'array') {
+                        obcount = obcount - 1
+
+                        if (this.typeof(item[i]) === 'string' || this.typeof(item[i]) === 'number') {
+                            if (item[i].length === 0) {
+                                // console.log('%c' +  tabs  + '%c' + i + `%c: ${item[i]}`+`%c|`, brc, idc, smc, stc)
+                                stdout.write(`${brc}${tabs}\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`${smc}: ${item[i]}\x1b[0m`)
+                                stdout.write(`\x1b[5m\x1b[97m|\x1b[0m\n`)
+                            } else if (this.typeof(item[i]) === 'number') {
+                                stdout.write(`${brc}${tabs}\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`${smc} = \x1b[0m`)
+                                stdout.write(`${stc}${item[i]}\x1b[0m\n`)
+                                // console.log('%c' +  tabs  + '%c' + i + `%c = %c${item[i]}`, brc, idc, smc, stc)
+                            } else {
+                                stdout.write(`${brc}${tabs}\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`${smc}: \x1b[0m`)
+                                stdout.write(`${stc}${item[i]}\x1b[0m`)
+                                stdout.write(`\x1b[5m\x1b[97m|\x1b[0m\n`)
+                                // console.log('%c' +  tabs  + '%c' + i + `%c: ${item[i]}`+`%c ${item[i].length}|`, brc, idc, smc, stc)
+                            }
+
+                        } else {
+
+                            if (i == 0) {
+                                stdout.write(`${brc}${tabs}...\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`\x1b[5m${smc}[ \x1b[0m`)
+                                stdout.write(`${stc}${item[i]}\x1b[0m`)
+                                stdout.write(`\x1b[5m${smc}] \x1b[0m\n`)
+                                // console.log('%c' +  tabs  + '...%c' + i + `%c[%c${item[i].length}%c]`, brc, brc, smc, stc, smc)
+                            } else {
+                                stdout.write(`${brc}${tabs}\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`\x1b[5m${stc}[ \x1b[0m`)
+                                stdout.write(`${smc}${item[i]}\x1b[0m`)
+                                stdout.write(`\x1b[5m${stc}] \x1b[0m\n`)
+                                // console.log('%c' +  tabs  + '%c' + i + `%c[%c${item[i].length}%c]`, brc, idc, stc, smc, stc)
+                            }
+
+                            output(item[i], depth + 1, obcount)
+                        }
+
+                    } else {
+                        // let loc = 0
+                        // if (this.typeof(item[i]) === 'function') {
+                        //     item[i] = this.filterChars(item[i].toString().split('\n')[0], '{')
+                        //     loc = item[i].length
+                        // }
+                        if (scount !== count - 1) {
+                            obcount = obcount - 1
+                            if (sh.length > 1) {
+                                for (let s in sh) {
+                                    if (scount === sh[s]) {
+                                        if (scount === 4) {
+                                            stdout.write(`${brc}${tabs}\x1b[0m`)
+                                            stdout.write(`${idc}${i}\x1b[0m`)
+                                            stdout.write(`${smc}: \x1b[0m`)
+                                            stdout.write(`${stc}${item[i]}\x1b[0m\n`)
+                                            // console.log('%c' + tabs + '%c' +  i + '%c: ' + `%c ${item[i]} `,
+                                                        // brc, idc, smc, stc)
+                                            stdout.write(`${smc}${tabs}\x1b[0m`)
+                                            stdout.write(`${brc}...\x1b[0m\n`)
+
+                                            // console.log('%c' + tabs + '%c' + '...', smc, brc)
+                                        } else {
+                                            stdout.write(`${brc}${tabs}\x1b[0m`)
+                                            stdout.write(`${idc}${i}\x1b[0m`)
+                                            stdout.write(`${smc}: \x1b[0m`)
+                                            stdout.write(`${stc}${item[i]}\x1b[0m\n`)
+                                            // console.log('%c' +tabs +'%c' +i + '%c: ' +  `%c ${item[i]} `,
+                                                        // brc, idc, smc, stc)
+                                        }
+
+                                    }
+                                }
+                            } else {
+                                stdout.write(`${brc}${tabs}\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`${smc}: \x1b[0m`)
+                                stdout.write(`${stc}${item[i]}\x1b[0m`)
+                                // if (loc > 0) stdout.write(`${brc}{\x1b[0m`), stdout.write(`${stc}${loc}\x1b[0m`), stdout.write(`\x1b[5m${idc}|\x1b[0m`), stdout.write(`${brc}}\x1b[0m`)
+                                stdout.write('\n')
+                                // console.log('%c' + tabs + '%c' + i + '%c: ' +  `%c ${item[i]}`,
+                                            // brc, idc, smc, stc)
+                            }
+                        } else {
+                            if (depth === 0) {
+                                if (this.typeof(dp) === 'string') endstr = dp
+                                else if (this.typeof(endp) === 'string') endstr = endp
+                            }
+                            obcount = obcount - 1
+                            let cur = ''
+                            if (curly > 0) {
+                                for (var cu = 0; cu < obcount + 1; cu++) {
+                                    cur = cur + ' }'
+                                }
+                                stdout.write(`${brc}${tabs}\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`${smc}: \x1b[0m`)
+                                stdout.write(`${stc}${item[i]}${cur} \x1b[0m`)
+                                stdout.write(`${idc}${endstr}\x1b[0m\n`)
+                                // console.log('%c' + tabs + '%c' + i + '%c: '  +  `%c ${item[i]}`+ cur +`${endstr}`,
+                                            // brc, idc, smc, stc)
+                            } else {
+                                stdout.write(`${brc}${tabs}\x1b[0m`)
+                                stdout.write(`${idc}${i}\x1b[0m`)
+                                stdout.write(`${smc}: \x1b[0m`)
+                                stdout.write(`${stc}${item[i]} \x1b[0m`)
+                                stdout.write(`${brc}${tabs.slice(0, tabs.length - 6)}\x1b[0m`)
+                                stdout.write(`${stc} } } \x1b[0m`)
+                                stdout.write(`${idc}${endstr}\x1b[0m\n`)
+                                // console.log(`%c${tabs}` + `%c${i}` + '%c: ' + `%c ${item[i]}`+ `%c${tabs.slice(0, tabs.length - 6)}`+`%c } } ${endstr}` ,
+                                            // brc, idc, smc, stc, brc, smc)
+                            }
+
+                        }
+                    }
+                    scount = scount + 1
+
+                }
+            } else {
+                console.log(item)
+            }
+        }
+
+        output(item)
+    }
+
+    outputBrowser(item, dp, endp) {
         this.dps = 0
         if (this.typeof(dp) === 'number') this.dps = dp
         else if (this.typeof(endp) === 'number') this.dps = endp
@@ -650,6 +873,8 @@ class NjSuper {
 
         output(item)
     }
+
+
 
 }
 
