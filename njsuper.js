@@ -256,6 +256,110 @@ class NjSuper {
         return array
     }
 
+    rplString(obj) {
+        let sl = obj.string.length - 1, i = 0, nwl = obj.sub.length - 1, exists = false, opt = {}, ids = [], chrCode = 0, spc = 0, spaces = false
+        let there = false, n = 0, newstr = '', l = 0, linestr = ''
+        opt.spaces = {}
+        for(;;) {
+            exists = false
+            if (i>sl) break
+            else {
+                if (obj.options.space) {
+                    if (obj.string[i].charCodeAt(0) == 32) {
+                        console.log(obj.string[i].charCodeAt(0))
+                        if (opt.spaces[0]) {
+                            if (spaces) {
+                                opt.spaces[spc].count += 1
+                            } else {
+                                spc += 1
+                                opt.spaces[spc] = { count: 1 }, spaces = true
+                            }
+                        } else opt.spaces[spc] = { count: 1 }, spaces = true
+                    } else if (spaces) {
+                         spaces = false
+                    }
+
+                } else if (obj.options) {
+                    chrCode = obj.string[i].charCodeAt(0)
+                    opt[i] = {chr: obj.string[i], id: i}
+                    opt.len = i
+                    if (chrCode > 47 && chrCode < 58) {
+                        if (opt['n_'+obj.string[i]]) {opt[obj.string[i]].count += 1, opt[obj.string[i]].ids.push(opt[i].id)}
+                        else opt['n_'+obj.string[i]] = {chr: String(obj.string[i]), code: chrCode, number: Number(chrCode), count: 1, ids: [opt[i].id]}
+                        if (spaces) spaces = false
+                    } else if (chrCode > 65 && chrCode < 90) {
+                        if (opt[obj.string[i]]) {opt[obj.string[i]].count += 1, opt[obj.string[i]].ids.push(opt[i].id)}
+                        else opt[obj.string[i]] = {chr: obj.string[i], code: chrCode, lowercase: (chrCode * 2 - 33).toString(), uppercase: obj.string[i], count: 1, ids: [opt[i].id]}
+                        if (spaces) spaces = false
+                    } else if (chrCode > 96 && chrCode < 123) {
+                        if (opt[obj.string[i]]) {opt[obj.string[i]].count += 1, opt[obj.string[i]].ids.push(opt[i].id)}
+                        else {
+                            let uppercase
+                            if (chrCode % 2 == 1) uppercase = (((chrCode+1) / 2) + 17).toString()
+                            else uppercase = (chrCode / 2 + 16).toString()
+                            opt[obj.string[i]] = {chr: obj.string[i], code: chrCode, lowercase: chrCode, uppercase, count: 1, ids: [opt[i].id]}
+                            if (spaces) spaces = false
+                        }
+                    } else if (chrCode == 32) {
+                        if (opt.spaces[0]) {
+                            if (spaces) {
+                                opt.spaces[spc].count += 1, opt[obj.string[i]].ids.push(opt[i].id)
+                            } else {
+                                spc += 1
+                                opt.spaces[spc] = { chr: obj.string[i], code, chrCode, count: 1, ids: [opt[i].id] }, spaces = true
+                            }
+                        } else opt.spaces[spc] = { chr: obj.string[i], code, chrCode, count: 1, ids: [opt[i].id] }, spaces = true
+                    } else {
+                        if (opt['chr_'+chrCode]) {opt['chr_'+chrCode].count += 1, opt[obj.string[i]].ids.push(opt[i].id)}
+                        else opt['chr_'+chrCode] = {chr: strings[i], code: chrCode, count: 1}
+                        if (spaces) spaces = false
+                    }
+                    }
+                    l = nwl
+                    for (;;) {
+                        if (l < 0) break
+                        else {
+                            if (obj.string[i-l] === obj.sub[l]) {exists=true;break;}
+                        }
+                        l--
+                    }
+
+                    if (exists) {
+                        let e = 0
+                        if (obj.options.line) {
+                            if (opt.spaces[0]) {
+                                for (var s = 0; s < opt.spaces[0].count; s++) {
+                                    linestr += ' '
+                                }
+                            }
+                            linestr += obj.new
+                            return [linestr, true]
+                        } else {
+                            for (var s = n-l; s < n+l; s++) {
+                                newstr += obj.new[e]
+                                e++
+                            }
+                        }
+
+                        there = true
+                    } else {
+                        newstr += obj.string[i]
+                        n++
+                    }
+
+                }
+                i++
+        }
+
+        if (opt.len) {
+            if (!there) return opt
+            else opt.string = newstr; return opt;
+        }
+        else if (!there) return [obj.sub, false]
+        else return [newstr, true]
+    }
+
+
     splitOnce(string, cut, right, last) {
         let split = false, i = 0, l = 0, v = string.length - 1
 
@@ -379,12 +483,56 @@ class NjSuper {
             }
             Object.assign(obj, {[n]: value, len: n})
         }
+    }
 
-
+    rn() {
+        let rn = ''
+        for (var i = 0; i < arguments.length; i++) {
+            rn += arguments[i] + '\r\n'
+        }
+        return rn + '\r\n'
     }
 
     assign(name, value, number) {
-        if (name === 'this') {
+        if (this.typeof(name) === 'object') {
+            if (number) {
+                let number = 0
+                for (const i in this) {
+                    if (this.typeof(Number(i)) === 'number') {
+                        if(number <= Number(i)) {
+                            if(!this.has(Number(i) + 1)) {
+                                number = Number(i) + 1
+                            }
+                        }
+                    }
+                }
+                Object.assign(name, {[number]: value})
+            } else if (this.typeof(value) === 'object') {
+                Object.assign(name, value)
+            } else if (this.typeof(value) === 'string') {
+                let number = 0
+                for (const i in this) {
+                    if (this.typeof(Number(i)) === 'number') {
+                        if(number <= Number(i)) {
+                            if(!this.has(Number(i) + 1)) {
+                                number = Number(i) + 1
+                            }
+                        }
+                    }
+                }
+                Object.assign(name, {[number]: value})
+
+            } else if (this.typeof(value) === 'array') {
+                if (this.has('array')) {
+                    this.array.push(value)
+                } else {
+                    this.array = value
+                }
+            } else if (this.typeof(value) === 'function') {
+                const func = value
+                Object.assign(name, {func})
+            }
+        } else if (name === 'this') {
             if (number) {
                 let number = 0
                 for (const i in this) {
