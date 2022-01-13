@@ -256,9 +256,16 @@ class NjSuper {
         return array
     }
 
+    random(count) {
+        let date = Date.now().toString()
+        return Number(date.slice(date.length - count, date.length))
+    }
+
     rplString(obj) {
+        if (obj.string === '') return ['', false]
+        if (obj.sub.length > obj.string.length) return [obj.string, false]
         let sl = obj.string.length - 1, i = 0, nwl = obj.sub.length - 1, exists = false, opt = {}, ids = [], chrCode = 0, spc = 0, spaces = false
-        let there = false, n = 0, newstr = '', l = 0, linestr = ''
+        let there = false, n = 0, newstr = '', l = 0, linestr = '', a
         opt.spaces = {}
         for(;;) {
             exists = false
@@ -266,7 +273,6 @@ class NjSuper {
             else {
                 if (obj.options.space) {
                     if (obj.string[i].charCodeAt(0) == 32) {
-                        console.log(obj.string[i].charCodeAt(0))
                         if (opt.spaces[0]) {
                             if (spaces) {
                                 opt.spaces[spc].count += 1
@@ -289,15 +295,15 @@ class NjSuper {
                         if (spaces) spaces = false
                     } else if (chrCode > 65 && chrCode < 90) {
                         if (opt[obj.string[i]]) {opt[obj.string[i]].count += 1, opt[obj.string[i]].ids.push(opt[i].id)}
-                        else opt[obj.string[i]] = {chr: obj.string[i], code: chrCode, lowercase: (chrCode * 2 - 33).toString(), uppercase: obj.string[i], count: 1, ids: [opt[i].id]}
+                        else opt[obj.string[i]] = {chr: obj.string[i], code: chrCode, lowercase: String.fromCharCode(chrCode * 2 - 33), uppercase: obj.string[i], count: 1, ids: [opt[i].id]}
                         if (spaces) spaces = false
                     } else if (chrCode > 96 && chrCode < 123) {
                         if (opt[obj.string[i]]) {opt[obj.string[i]].count += 1, opt[obj.string[i]].ids.push(opt[i].id)}
                         else {
                             let uppercase
-                            if (chrCode % 2 == 1) uppercase = (((chrCode+1) / 2) + 17).toString()
-                            else uppercase = (chrCode / 2 + 16).toString()
-                            opt[obj.string[i]] = {chr: obj.string[i], code: chrCode, lowercase: chrCode, uppercase, count: 1, ids: [opt[i].id]}
+                            if (chrCode % 2 == 1) uppercase = String.fromCharCode(((chrCode+1) / 2) + 17)
+                            else uppercase = String.fromCharCode(chrCode / 2 + 16)
+                            opt[obj.string[i]] = {chr: obj.string[i], code: chrCode, lowercase: String.fromCharCode(chrCode), uppercase, count: 1, ids: [opt[i].id]}
                             if (spaces) spaces = false
                         }
                     } else if (chrCode == 32) {
@@ -315,47 +321,53 @@ class NjSuper {
                         if (spaces) spaces = false
                     }
                     }
+                if (i > nwl) {
                     l = nwl
+                    a = 1
                     for (;;) {
-                        if (l < 0) break
+                        if (l < 1) {exists=true;break;}
                         else {
-                            if (obj.string[i-l] === obj.sub[l]) {exists=true;break;}
+                            if (newstr[i-a] !== obj.sub[l]) {exists=false;break;}
                         }
                         l--
+                        a++
                     }
+                } else exists = false
 
-                    if (exists) {
-                        let e = 0
-                        if (obj.options.line) {
-                            if (opt.spaces[0]) {
-                                for (var s = 0; s < opt.spaces[0].count; s++) {
-                                    linestr += ' '
-                                }
-                            }
-                            linestr += obj.new
-                            return [linestr, true]
-                        } else {
-                            for (var s = n-l; s < n+l; s++) {
-                                newstr += obj.new[e]
-                                e++
+                if (exists) {
+                    let e = 0
+                    if (obj.options.line) {
+                        if (opt.spaces[0]) {
+                            for (var s = 0; s < opt.spaces[0].count; s++) {
+                                linestr += ' '
                             }
                         }
-
-                        there = true
+                        linestr += obj.new
+                        return [linestr, true]
                     } else {
-                        newstr += obj.string[i]
-                        n++
+                        for (var s = n-l; s < n+l; s++) {
+                            newstr += obj.new[e]
+                            e++
+                        }
                     }
+
+                    there = true
+                    exists = false
+                } else {
+                    newstr += obj.string[i]
+                    n++
+                }
 
                 }
                 i++
         }
 
+
         if (opt.len) {
             if (!there) return opt
             else opt.string = newstr; return opt;
         }
-        else if (!there) return [obj.sub, false]
+        else if (!there) return [obj.string, false]
         else return [newstr, true]
     }
 
